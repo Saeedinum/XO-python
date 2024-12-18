@@ -10,12 +10,21 @@ def save_result(result, file_name='history.csv'):
         writer.writerow([formatted_result])
     print(f"Game result '{formatted_result}' has been saved.")
 
-def retrieve_history(file_name='history.csv'):
+def retrieve_history():
+    history = []
     try:
-        with open(file_name, mode='r') as file:
+        with open("history.csv", "r") as file:
             reader = csv.reader(file)
-            print("\nGame History:")
             for row in reader:
-                print(row[0])  
+                if row:  # Check if the row is not empty
+                    history.append(", ".join(row))
     except FileNotFoundError:
-        print(f"\nThe file '{file_name}' does not exist yet.")
+        print("History file not found. Starting with empty history.")
+    return history
+
+def draw_history(screen, history, start_x, start_y, line_spacing, font, color):
+    y_position = start_y
+    for line in history:
+        text = font.render(line, True, color)
+        screen.blit(text, (start_x, y_position))
+        y_position += line_spacing

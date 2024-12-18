@@ -1,7 +1,6 @@
 import pygame
 from Button import Button
-from File import save_result, retrieve_history
-
+from File import save_result, retrieve_history, draw_history
 
 pygame.init()
 
@@ -32,6 +31,8 @@ button2_x = width - right_margin + 50 + button_width + 20
 restart_button = Button(button1_x, button_y, button_width, button_height, 'Restart', "#250DBA", "#3821D2", text_color, font)
 draw_button = Button(button2_x, button_y, button_width, button_height, 'Draw', "#404040", "#606060", text_color, font)
 
+history = retrieve_history()
+
 # Pygame setup
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Tic Tac Toe')
@@ -44,21 +45,9 @@ player = 'X'
 running = True
 
 def Draw_lines():
-    grid_width = width - right_margin - (2 * grid_margin)
-    grid_height = height - (2 * grid_margin)
-    start_x = grid_margin
-    start_y = grid_margin
-
-    cell_width = grid_width // 3
-    cell_height = grid_height // 3
-
-    for i in range(1, 3):
-        x = start_x + i * cell_width
-        pygame.draw.line(screen, line_color, (x, start_y), (x, start_y + grid_height), 4)
-
-    for i in range(1, 3):
-        y = start_y + i * cell_height
-        pygame.draw.line(screen, line_color, (start_x, y), (start_x + grid_width, y), 4)
+    for i in range(1,3) : 
+        pygame.draw.line(screen, line_color, (i * 600 // 3, 0), (i * 600 // 3, 600), 5)
+        pygame.draw.line(screen, line_color, (0, i * 600 // 3), (600, i * 600 // 3), 5)
 
 X_COLOR = (200, 0, 0)
 O_COLOR = (0, 0, 200)
@@ -139,7 +128,7 @@ def minimax(board, depth, is_maximizing, first_time=True):
         if first_time:
             board[final_i][final_j] = 'O'
         return final_score
-
+    
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -172,11 +161,15 @@ while running:
                 save_result(winner_message)
             print(winner_message) 
             retrieve_history()    
-            running = False       
+            restart_game()
+
 
     screen.fill(color)
     Draw_lines()
     draw_board()
+    history = retrieve_history()
+    if history:
+        draw_history(screen, history, button1_x, button_y + button_height + 20, 30, pygame.font.Font(None, 24), text_color)
     restart_button.draw(screen)
     draw_button.draw(screen)
 
