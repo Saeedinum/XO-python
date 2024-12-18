@@ -11,17 +11,13 @@ class Button:
 
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
-        is_hovering = self.rect.collidepoint(mouse_pos)
-        color_to_draw = self.hover_color if is_hovering else self.color
-
-        pygame.draw.rect(screen, color_to_draw, self.rect)
-
+        if self.rect.collidepoint(mouse_pos):
+            pygame.draw.rect(screen, self.hover_color, self.rect)
+        else:
+            pygame.draw.rect(screen, self.color, self.rect)
         text_surface = self.font.render(self.text, True, self.text_color)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
 
-    def is_clicked(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            return self.rect.collidepoint(mouse_pos)
-        return False
+    def is_clicked(self, mouse_pos):
+        return self.rect.collidepoint(mouse_pos)

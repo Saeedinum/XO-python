@@ -92,6 +92,14 @@ def check_winner():
         return 0  
     return 1  
 
+def restart_game():
+    global board, player
+    board = [[' ' for _ in range(3)] for _ in range(3)]
+    player = 'X'
+
+def save_draw():
+    save_result("Draw")
+
 def minimax(board, depth, is_maximizing, first_time=True):
     result = check_winner()
     if depth == 0 or result != 1:
@@ -137,6 +145,13 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and player == 'X':
+
+            if restart_button.is_clicked(event.pos):
+                restart_game()
+            elif draw_button.is_clicked(event.pos):
+                save_draw()
+                restart_game()
+
             x, y = event.pos
             row, col = (y - grid_margin) // GRID_SIZE, (x - grid_margin) // GRID_SIZE
             if 0 <= row < 3 and 0 <= col < 3 and board[row][col] == ' ':
