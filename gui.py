@@ -1,5 +1,7 @@
 import pygame
 from Button import Button
+from File import save_result, retrieve_history
+
 
 pygame.init()
 
@@ -12,10 +14,10 @@ text_color = 'white'
 font = pygame.font.Font(None, 48)  
 
 # Screen dimensions
-width = 800 
+width = 1200 
 height = 600
 GRID_SIZE = (height - 100) // 3  
-right_margin = 200
+right_margin = 400
 grid_margin = 30
 
 # Button dimensions
@@ -23,8 +25,8 @@ button_width = 120
 button_height = 40
 button_y = 10
 
-button1_x = width - right_margin + 10
-button2_x = width - right_margin + 10 + button_width + 20
+button1_x = width - right_margin + 50
+button2_x = width - right_margin + 50 + button_width + 20
 
 # Create buttons
 restart_button = Button(button1_x, button_y, button_width, button_height, 'Restart', "#250DBA", "#3821D2", text_color, font)
@@ -65,7 +67,7 @@ def draw_board():
     for i in range(3):
         for j in range(3):
             cell_x = grid_margin + j * GRID_SIZE + GRID_SIZE // 3
-            cell_y = grid_margin + i * GRID_SIZE + GRID_SIZE // 4
+            cell_y = grid_margin + i * GRID_SIZE + GRID_SIZE // 3
             if board[i][j] == 'X':
                 text = font.render('X', True, X_COLOR)
                 screen.blit(text, (cell_x, cell_y))
@@ -147,7 +149,15 @@ while running:
                 player = 'X'
         winner = check_winner()
         if winner != 1:
-            winner_message = "No Winner" if winner == 0 else ("X Wins" if winner == 2 else "O Wins")
+            if winner == 0:
+                winner_message = "Draw"
+                save_result(winner_message)
+            else:
+                winner_message = "X Wins" if winner == 2 else "O Wins"
+                save_result(winner_message)
+            print(winner_message) 
+            retrieve_history()    
+            running = False       
 
     screen.fill(color)
     Draw_lines()
